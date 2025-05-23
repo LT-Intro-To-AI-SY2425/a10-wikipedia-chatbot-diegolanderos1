@@ -111,10 +111,116 @@ def get_birth_date(name: str) -> str:
 
     return match.group("birth")
 
+def get_university_motto(name: str) -> str:
+    """Gets the motto(s) of the given university
+
+    Args:
+        name - name of the university
+
+    Returns:
+        motto(s) of the given university
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
+    pattern = r"English(.*?)(?=Type)"
+    error_text = (
+        "Page infobox has no motto information"
+    )
+    match = get_match(infobox_text, pattern, error_text)
+    return match.groups()[0]
+
+def get_artist_genre(name: str) -> str:
+    """Gets the genre(s) of the given musical artist
+
+    Args:
+        name - name of the musical artist
+
+    Returns:
+        genre(s) of the given musical artist
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
+    pattern = r"Genres\n(.*?)(?=\n)"
+    error_text = (
+        "Page infobox has no genre information"
+    )
+    match = get_match(infobox_text, pattern, error_text)
+    return match.groups()[0]
+
+def get_painter_movement(painter_name: str) -> str:
+    """Gets the movement of the given painter
+
+    Args:
+        painter_name - name of the painter to get movement of
+
+    Returns:
+        movement of the given painter
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(painter_name)))
+    pattern = r"Movement(.*?)(?=Spouses)"
+    error_text = "Page infobox has no artistic movement information"
+    match = get_match(infobox_text, pattern, error_text)
+    return match.groups()[0]
+
+def get_notable_work(painter_name: str) -> str:
+    """Gets one notable work of the given painter
+
+    Args:
+        painter_name - name of the painter to get notable work of
+
+    Returns:
+        one notable work of the given painter
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(painter_name)))
+    pattern = r"Notable work\s*\n(?P<title>.+?) \((?P<year>c?\.?\s?\d{4}(?:–\d{4})?)\)"
+    error_text = "Page infobox has no artistic movement information"
+    match = get_match(infobox_text, pattern, error_text)
+    return f"{match.group('title')} ({match.group('year')})"
 
 # below are a set of actions. Each takes a list argument and returns a list of answers
 # according to the action and the argument. It is important that each function returns a
 # list of the answer(s) and not just the answer itself.
+def notable_work (matches: List[str]) -> List[str]:
+    """Returns one notable work of named painter in matches
+
+    Args:
+        matches - match from pattern of painter's name to find one notable work of
+
+    Returns:
+        notable work of named painter
+    """
+    return [get_notable_work(" ".join(matches))]
+
+def university_motto (matches: List[str]) -> List[str]:
+    """Returns motto of named university in matches
+
+    Args:
+        matches - match from pattern of university's name to find motto(s) of
+
+    Returns:
+        motto of named university
+    """
+    return [get_university_motto(matches[0])]
+
+def painter_movement (matches: List[str]) -> List[str]:
+    """Returns artistic movement of named painter in matches
+
+    Args:
+        matches - match from pattern of painter's name to find artisitc movement of
+
+    Returns:
+        artistic movement of named painter
+    """
+    return [get_painter_movement(matches[0])]
+
+def artist_genre(matches: List[str]) -> List[str]:
+    """Returns the genre of named musical artist in matches
+
+    Args:
+        matches - match from pattern of person's name to find genre of
+
+    Returns:
+        genre of named person
+    """
+    return [get_artist_genre(matches[0])]
 
 
 def birth_date(matches: List[str]) -> List[str]:
@@ -156,6 +262,10 @@ Action = Callable[[List[str]], List[Any]]
 pa_list: List[Tuple[Pattern, Action]] = [
     ("when was % born".split(), birth_date),
     ("what is the polar radius of %".split(), polar_radius),
+    ("what is the movement of %".split(), painter_movement),
+    ("what genre is %".split(), artist_genre),
+    ("what is the motto of %".split(), university_motto),
+    ("what is one work from %".split(), notable_work),
     (["bye"], bye_action),
 ]
 
