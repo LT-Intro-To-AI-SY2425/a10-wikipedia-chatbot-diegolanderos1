@@ -155,10 +155,10 @@ def get_painter_movement(painter_name: str) -> str:
         movement of the given painter
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(painter_name)))
-    pattern = r"Movement(.*?)(?=Spouses)"
+    pattern = (r"Movement\s*(.*?)\s*(Family|Spouses|Known for|Notable work|Signature|Born|Died|Resting place|Education|Years active|Other names|Occupation|Works|$)")
     error_text = "Page infobox has no artistic movement information"
     match = get_match(infobox_text, pattern, error_text)
-    return match.groups()[0]
+    return match.group(1).strip()
 
 def get_notable_work(painter_name: str) -> str:
     """Gets one notable work of the given painter
@@ -170,8 +170,8 @@ def get_notable_work(painter_name: str) -> str:
         one notable work of the given painter
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(painter_name)))
-    pattern = r"Notable work\s*\n(?P<title>.+?) \((?P<year>c?\.?\s?\d{4}(?:–\d{4})?)\)"
-    error_text = "Page infobox has no artistic movement information"
+    pattern = r"Notable work?\s*(?P<title>.+?)\s*\((?P<year>c?\.?\s?\d{4}(?:–\d{4})?)\)"
+    error_text = "Page infobox has no notable work information"
     match = get_match(infobox_text, pattern, error_text)
     return f"{match.group('title')} ({match.group('year')})"
 
@@ -294,7 +294,7 @@ def search_pa_list(src: List[str]) -> List[str]:
 def query_loop() -> None:
     """The simple query loop. The try/except structure is to catch Ctrl-C or Ctrl-D
     characters and exit gracefully"""
-    print("Welcome to the movie database!\n")
+    print("Welcome to the Wikipedia chatbot!\n")
     while True:
         try:
             print()
@@ -311,3 +311,29 @@ def query_loop() -> None:
 
 # uncomment the next line once you've implemented everything are ready to try it out
 query_loop()
+
+# Welcome to the Wikipedia chatbot!
+
+# Your query? what is one work from Pablo Picasso
+# La Vie (1903)
+
+# Your query? what is one work from Van Gogh
+# Sunflowers (1887)
+
+# Your query? what is the movement of Picasso
+# Cubism, Surrealism
+
+# Your query? what is the movement of Leonardo da Vinci
+# High Renaissance
+
+# Your query? what is the motto of Northwestern University
+# "Whatsoever things are true" (Philippians 4:8 AV)"The Word full of grace and truth" (John 1:14)
+
+# Your query? what is the motto of Harvard University
+# "Truth"
+
+# Your query? what genre is Kendrick Lamar
+# West Coast hip hop
+
+# Your query? what genre is Rihanna
+# R&B
