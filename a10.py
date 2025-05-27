@@ -155,10 +155,10 @@ def get_painter_movement(painter_name: str) -> str:
         movement of the given painter
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(painter_name)))
-    pattern = (r"Movement\s*(.*?)\s*(Family|Spouses|Known for|Notable work|Signature|Born|Died|Resting place|Education|Years active|Other names|Occupation|Works|$)")
-    error_text = "Page infobox has no artistic movement information"
+    pattern = r"Notable work.*?([^\n]+(?:\s*\(\d{4}(?:–\d{4})?\))?(?:\s*[\u00A0\u200B\u200C]*)?)"
+    error_text = "Page infobox has no notable work information"
     match = get_match(infobox_text, pattern, error_text)
-    return match.group(1).strip()
+    return f"{match.group(1)}"
 
 def get_notable_work(painter_name: str) -> str:
     """Gets one notable work of the given painter
@@ -170,7 +170,7 @@ def get_notable_work(painter_name: str) -> str:
         one notable work of the given painter
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(painter_name)))
-    pattern = r"Notable work?\s*(?P<title>.+?)\s*\((?P<year>c?\.?\s?\d{4}(?:–\d{4})?)\)"
+    pattern = r"Notable work.*?([^\n]+(?:\s*\(\d{4}(?:–\d{4})?\))?(?:\s*[\u00A0\u200B\u200C]*)?)"
     error_text = "Page infobox has no notable work information"
     match = get_match(infobox_text, pattern, error_text)
     return f"{match.group('title')} ({match.group('year')})"
