@@ -15,7 +15,7 @@ The purpose of this assignment is to get more practice with "regular expressions
 Pip install nltk (like you did for Wikipedia in Assignment 9) then enter the Python interpreter and run the following commands:
 
 ```python
-import nltk
+= nltk
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('maxent_ne_chunker')

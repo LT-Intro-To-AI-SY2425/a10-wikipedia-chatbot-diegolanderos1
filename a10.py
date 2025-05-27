@@ -111,7 +111,7 @@ def get_birth_date(name: str) -> str:
 
     return match.group("birth")
 
-def get_university_motto(name: str) -> str:
+def get_english_university_motto(name: str) -> str:
     """Gets the motto(s) of the given university
 
     Args:
@@ -189,16 +189,17 @@ def notable_work (matches: List[str]) -> List[str]:
     """
     return [get_notable_work(" ".join(matches))]
 
-def university_motto (matches: List[str]) -> List[str]:
+def english_university_motto (matches: List[str]) -> List[str]:
     """Returns motto of named university in matches
 
     Args:
-        matches - match from pattern of university's name to find motto(s) of
+        matches - match from pattern of university's name to find english version motto(s) of
+        must also have latin version
 
     Returns:
         motto of named university
     """
-    return [get_university_motto(matches[0])]
+    return [get_english_university_motto(matches[0])]
 
 def painter_movement (matches: List[str]) -> List[str]:
     """Returns artistic movement of named painter in matches
@@ -262,10 +263,10 @@ Action = Callable[[List[str]], List[Any]]
 pa_list: List[Tuple[Pattern, Action]] = [
     ("when was % born".split(), birth_date),
     ("what is the polar radius of %".split(), polar_radius),
-    ("what is the movement of %".split(), painter_movement),
-    ("what genre is %".split(), artist_genre),
-    ("what is the motto of %".split(), university_motto),
-    ("what is one work from %".split(), notable_work),
+    ("what is the movement of %".split(), painter_movement), # about painters
+    ("what genre is %".split(), artist_genre), # about musical artists
+    ("what is the motto of %".split(), english_university_motto), # about universities with latin mottos
+    ("what is one work from %".split(), notable_work), # about painters
     (["bye"], bye_action),
 ]
 
